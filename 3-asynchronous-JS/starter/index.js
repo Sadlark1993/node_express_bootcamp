@@ -1,7 +1,7 @@
 const fs = require('fs');
 const superagt = require('superagent');
 
-// callback hell
+// ########################### CALLBACK HELL ##################################
 // fs.readFile(`${__dirname}/dog.txt`, (err, data) => {
 //   console.log(`Breed: ${data}`);
 //   superagt.get(`https://dog.ceo/api/breed/${data}/images/random`).end((err, result) => {
@@ -13,7 +13,45 @@ const superagt = require('superagent');
 //   });
 // });
 
-// promisses
+// ########################### PROMISES ##################################
+// const readFilePro = (file) => {
+//   return new Promise((resolve, reject) => {
+//     fs.readFile(file, (err, data) => {
+//       //the reject sends the data to catch() method
+//       if (err) reject({ message: 'readFile: Not found' });
+
+//       // the resolve sends the data to then() method
+//       resolve(data);
+//     });
+//   });
+// };
+
+// const writeFilePro = (file, data) => {
+//   return new Promise((resolve, reject) => {
+//     fs.writeFile(file, data, (err) => {
+//       if (err) reject({ message: 'writefile: Not found' });
+//       resolve({ message: 'done' });
+//     });
+//   });
+// };
+
+// readFilePro(`${__dirname}/dog.txt`)
+//   .then((data) => {
+//     console.log(`Breed: ${data}`);
+//     return superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
+//   })
+//   .then((data) => {
+//     console.log(data.body.message);
+//     return writeFilePro(`${__dirname}/dog-img.txt`, data.body.message);
+//   })
+//   .then(() => {
+//     console.log('Random image saved to file!');
+//   })
+//   .catch((err) => {
+//     console.error(err.message);
+//   });
+
+// ########################### ASYNC AWAIT ##################################
 const readFilePro = (file) => {
   return new Promise((resolve, reject) => {
     fs.readFile(file, (err, data) => {
@@ -35,18 +73,19 @@ const writeFilePro = (file, data) => {
   });
 };
 
-readFilePro(`${__dirname}/dog.txt`)
-  .then((data) => {
+const getDogPic = async () => {
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
     console.log(`Breed: ${data}`);
-    return superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
-  })
-  .then((data) => {
-    console.log(data.body.message);
-    return writeFilePro(`${__dirname}/dog-img.txt`, data.body.message);
-  })
-  .then(() => {
+
+    const res = await superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
+    console.log(res.body.message);
+
+    await writeFilePro(`${__dirname}/dog-img.txt`, res.body.message);
     console.log('Random image saved to file!');
-  })
-  .catch((err) => {
-    console.error(err.message);
-  });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+getDogPic();
