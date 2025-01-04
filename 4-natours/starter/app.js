@@ -11,10 +11,6 @@ const app = express();
 //this middleware grant us access to the body of the incoming req
 app.use(express.json());
 
-// app.get('/', (req, res) => {
-//   res.status(200).json({ message: 'Hello from the server side!', app: 'Natours' });
-// });
-
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 app.get('/api/v1/tours', (req, res) => {
@@ -59,6 +55,20 @@ app.patch('/api/v1/tours/:id', (req, res) => {
   }
 
   res.status(200).json({ status: 'success', tour: '<Updated tour here...>' });
+});
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+  const id = +req.params.id;
+
+  const tour = tours.find((item) => item.id === id);
+  if (!tour) {
+    return res.status(404).json({ status: 'failed', msg: 'Tour not found' });
+  }
+
+  res.status(204).json({
+    status: 'success',
+    message: 'tour deleted',
+  });
 });
 
 const port = 3000;
