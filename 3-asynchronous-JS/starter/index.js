@@ -85,7 +85,30 @@ const getDogPic = async () => {
     console.log('Random image saved to file!');
   } catch (err) {
     console.log(err.message);
+    throw err;
   }
+  return '2: Async func finished runing';
 };
 
-getDogPic();
+// handling async return
+(async () => {
+  try {
+    console.log('1: will run the async func');
+    const x = await getDogPic();
+    console.log(x);
+    console.log('Done');
+  } catch (err) {
+    console.log('ERROR');
+  }
+})();
+
+// __________ Using then/catch to handle async returns ____________
+/* console.log('1: will run the async func');
+getDogPic().then((x) => {
+  console.log(x);
+  console.log('3: done');
+}).catch(err){
+  console.log('ERROR')
+};*/
+
+console.log('4: this step will execute right after the 1st because its not blocking');
