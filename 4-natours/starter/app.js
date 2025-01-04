@@ -27,6 +27,20 @@ app.get('/api/v1/tours', (req, res) => {
   });
 });
 
+app.get('/api/v1/tours/:id', (req, res) => {
+  const id = +req.params.id;
+
+  const tour = tours.find((item) => item.id === id);
+  if (!tour) {
+    return res.status(404).json({ status: 'failed', msg: 'Tour not found' });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    tour,
+  });
+});
+
 app.post('/api/v1/tours', (req, res) => {
   //console.log(req.body);
   const newId = tours[tours.length - 1].id + 1;
