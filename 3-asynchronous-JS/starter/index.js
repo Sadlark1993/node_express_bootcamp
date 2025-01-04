@@ -73,15 +73,38 @@ const writeFilePro = (file, data) => {
   });
 };
 
+// // only one promise per time
+// const getDogPic = async () => {
+//   try {
+//     const data = await readFilePro(`${__dirname}/dog.txt`);
+//     console.log(`Breed: ${data}`);
+
+//     const res = await superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
+//     console.log(res.body.message);
+
+//     await writeFilePro(`${__dirname}/dog-img.txt`, res.body.message);
+//     console.log('Random image saved to file!');
+//   } catch (err) {
+//     console.log(err.message);
+//     throw err;
+//   }
+//   return '2: Async func finished runing';
+// };
+
+// several promises at once with Promise.all()
 const getDogPic = async () => {
   try {
     const data = await readFilePro(`${__dirname}/dog.txt`);
     console.log(`Breed: ${data}`);
 
-    const res = await superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
-    console.log(res.body.message);
+    const res1 = superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
+    const res2 = superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
+    const res3 = superagt.get(`https://dog.ceo/api/breed/${data}/images/random`);
+    const all = await Promise.all([res1, res2, res3]);
+    const allImgs = all.map((item) => item.body.message);
+    console.log([allImgs]);
 
-    await writeFilePro(`${__dirname}/dog-img.txt`, res.body.message);
+    await writeFilePro(`${__dirname}/dog-img.txt`, allImgs.join('\n'));
     console.log('Random image saved to file!');
   } catch (err) {
     console.log(err.message);
