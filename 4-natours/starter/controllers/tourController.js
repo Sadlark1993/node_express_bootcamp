@@ -5,6 +5,22 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
+
+export const checkId = (req, res, next, val) => {
+    console.log(`Tour id is ${val}`);
+    if (+val > tours.length) {
+        return res.status(404).json({ status: 'failed', msg: 'Tour not found' });
+    }
+    next();
+}
+
+export const checkBody = (req, res, next) => {
+    if (!req.body.name || !req.body.price) {
+        return res.status(400).json({ status: 'fail', message: 'name and price properties are required!' });
+    }
+    next();
+}
+
 export const getAllTours = (req, res) => {
     console.log(req.requestTime);
     res.status(200).json({
