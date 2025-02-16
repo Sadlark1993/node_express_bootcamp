@@ -19,10 +19,10 @@ app.use(express.json());
 // this is just to show how to serve static files
 app.use(express.static(`${__dirname}/public`));
 
-app.use((req, res, next) => {
-  console.log('Hallo from the middleware 👋');
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log('Hallo from the middleware 👋');
+//   next();
+// });
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
